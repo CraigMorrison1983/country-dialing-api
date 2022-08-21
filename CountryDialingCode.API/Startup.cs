@@ -87,6 +87,8 @@ namespace CountryDialingCode.API
 
             services.AddScoped<IHttpApiConsumer, HttpApiConsumer>();
             services.AddScoped<IPhoneUserService, PhoneUserService>();
+            services.AddScoped<ICountryCodeService, CountryCodeService>();
+
 
             services.AddSwaggerGen(c =>
             {

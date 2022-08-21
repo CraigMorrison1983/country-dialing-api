@@ -7,6 +7,6 @@ namespace CountryDialingCode.Services.Abstract.General
 {
     public interface IHttpApiConsumer
     {
-        Task<T> Get<T>(string endPoint, string parameterList);
+       Task<string> GetAsync(string endPoint, string parameterList);
     }
 }

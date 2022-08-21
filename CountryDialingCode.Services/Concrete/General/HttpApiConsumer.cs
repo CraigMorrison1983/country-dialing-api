@@ -1,5 +1,7 @@
-﻿using CountryDialingCode.Services.Abstract.General;
+﻿using CountryDialingCode.Core.Constants;
+using CountryDialingCode.Services.Abstract.General;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -15,10 +17,10 @@ namespace CountryDialingCode.Services.Concrete.General
         public HttpApiConsumer()
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://restcountries.com/v2/");
+            _httpClient.BaseAddress = new Uri(RestCountriesApiConstants.BaseApiURL);
         }
 
-        public async Task<T> Get<T>(string endPoint, string parameterList)
+        public async Task<string> GetAsync(string endPoint, string parameterList)
         {
             string jsonResult = "";
 
@@ -31,11 +33,9 @@ namespace CountryDialingCode.Services.Concrete.General
             {
                 jsonResult = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                var json = JsonConvert.DeserializeObject<T>(jsonResult);
-                return json;
             }
 
-            throw new Exception();
+            return jsonResult;
         }
     }
 }
