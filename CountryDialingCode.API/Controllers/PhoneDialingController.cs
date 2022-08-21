@@ -28,7 +28,7 @@ namespace CountryDialingCode.API.Controllers
         }
 
         [HttpGet("{phoneNumber}", Name = "GetCallingCountryInfo")]
-        public async Task<ActionResult> GetCallingCountryInfoAsync(string phoneNumber)
+        public async Task<IActionResult> GetCallingCountryInfoAsync(string phoneNumber)
         {
 
             if (phoneNumber.Replace(" ", "").Replace("+", "").Trim().Length < 11)
