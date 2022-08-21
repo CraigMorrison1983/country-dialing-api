@@ -9,6 +9,8 @@ namespace CountryDialingCode.API.Models
     {
         public UserDetails()
         {
+            Name = "";
+
             Languages = new List<string>();
         }
 

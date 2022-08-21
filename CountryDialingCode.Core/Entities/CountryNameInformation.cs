@@ -7,6 +7,12 @@ namespace CountryDialingCode.Core.Entities
 {
     public class CountryNameInformation
     {
+        public CountryNameInformation()
+        {
+            Common = "";
+            Official = "";
+        }
+
         [JsonProperty(PropertyName = "common")]
         public string Common { get; set; }
 

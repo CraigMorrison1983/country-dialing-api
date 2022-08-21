@@ -9,6 +9,7 @@ namespace CountryDialingCode.Core.Entities
     {
         public DialingRoute()
         {
+            Root = "";
             Suffixes = new List<string>();
         }
 

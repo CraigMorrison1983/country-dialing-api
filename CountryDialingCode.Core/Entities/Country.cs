@@ -10,7 +10,11 @@ namespace CountryDialingCode.Core.Entities
     {
         public Country()
         {
+            Name = "";
+            CountryCode = "";
             Languages = new List<Language>();
+            Region = "";
+            FlagUrl = "";
             Translations = new Dictionary<string, string>();
         }
 

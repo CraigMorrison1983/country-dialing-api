@@ -9,6 +9,10 @@ namespace CountryDialingCode.API.Models
     {
         public PhoneCallDetails()
         {
+            PhoneNumber = "";
+            CallingCode = "";
+            CountryCode = "";
+
             User = new UserDetails();
             CallingCountry = new CallingCountryDetails();
         }

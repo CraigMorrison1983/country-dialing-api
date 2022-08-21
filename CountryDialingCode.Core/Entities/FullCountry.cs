@@ -10,7 +10,9 @@ namespace CountryDialingCode.Core.Entities
         public FullCountry()
         {
             CountryDetails = new CountryNameInformation();
+            CountryCode = "";
             DialingCodes = new DialingRoute();
+            IsIndependent = false;
         }
 
         [JsonProperty(PropertyName = "name")]

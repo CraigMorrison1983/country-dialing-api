@@ -8,6 +8,7 @@ namespace CountryDialingCode.Core.Entities
     {
         public PhoneUser()
         {
+            Name = "";
             Languages = new List<string>();
         }
 

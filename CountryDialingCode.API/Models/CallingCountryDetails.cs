@@ -7,6 +7,15 @@ namespace CountryDialingCode.API.Models
 {
     public class CallingCountryDetails
     {
+        public CallingCountryDetails()
+        {
+            DefaultLanguage = "";
+            Name = "";
+            UserDefaultCountryName = "";
+            Region = "";
+            FlagUrl = "";
+        }
+
         public string DefaultLanguage { get; set; }
 
         public string Name { get; set; }
