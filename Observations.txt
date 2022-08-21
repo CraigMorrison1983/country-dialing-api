@@ -1,0 +1,8 @@
+When querying the RestCountries Api some codes do not work as expected. North American ones are problematic. For example dialing code "1 242" should be the Bahamas but passing that to the Api does not return a result. You have to use the dialing code "1". This though brings back multiple countries with just that dialing code. Because of this I made a special case for any dialing codes that start 1 where I remove the rest of the code and just sent 1 to the Api. From there I have to query the "All" endpoint that lists all countries and gives more information about them including the suffix of the dialing code and match from there. Could have also queried each country individually for this but felt this was better than multiple trips back to the RestCountries Api.
+
+The UK is also a special case, "44" brings the UK and several of the surrounding isles back. These can not be seperated by suffixes though.
+
+In the event of multiple users matching the main language of the country I have simply selected one to use at random.
+
+My Api assumes a 10 digit phone number plus the Dialing code (not including any spaces or + sign which are stripped out if present during the process of checking the dialing code). Countries have different lengths of phone numbers so for the purposes of this test I have assumed the last 10 digits are the local number and anything before is the country code. This would be an area for further improvement.
+

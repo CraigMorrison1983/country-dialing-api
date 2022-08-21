@@ -1,0 +1,58 @@
+{
+	"info": {
+		"_postman_id": "96480519-a0cd-4931-88a4-94a4dec96546",
+		"name": "Country Dialing Codes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14209676"
+	},
+	"item": [
+		{
+			"name": "+44 Dialing Code",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "+64 Dialing Code",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "+92 Dialing Code",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "+1256 Dialing Code",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "+1242 Dialing Code",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "+996 Dialing Code",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
