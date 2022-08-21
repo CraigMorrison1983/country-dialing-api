@@ -46,8 +46,6 @@ namespace CountryDialingCode.API.Controllers
 
             Country country = await _httpApiConsumer.GetCountryDetailsAsync(callingCode);
 
-            List<PhoneCallDetails> phoneCalls = new List<PhoneCallDetails>();
-
             if (country != null)
             {
                 var userList = _phoneUserService.GetPhoneUsersByLanguage(country.Languages[0].LanguageCode);
