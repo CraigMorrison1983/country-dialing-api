@@ -33,7 +33,7 @@ namespace CountryDialingCode.API.Controllers
 
             if (phoneNumber.Replace(" ", "").Replace("+", "").Trim().Length < 11)
             {
-                return BadRequest(new { Status = 400, Title = "Bad Request", Message = "Phone number should be minimum 11 characters." });
+                return BadRequest(new { Status = 400, Title = "Bad Request", Message = "Phone number should be minimum 11 characters including country code." });
             }
 
 
