@@ -6,6 +6,12 @@ namespace CountryDialingCode.Core.Entities
 {
    public class PhoneUser
     {
+        public PhoneUser()
+        {
+            Name = "";
+            Languages = new List<string>();
+        }
+
         public string Name { get; set; }
 
         public List<string> Languages { get; set; }
