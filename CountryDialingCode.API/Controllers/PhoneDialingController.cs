@@ -1,6 +1,7 @@
 ﻿using CountryDialingCode.API.Models;
 using CountryDialingCode.Core.Constants;
 using CountryDialingCode.Core.Entities;
+using CountryDialingCode.Core.Utils;
 using CountryDialingCode.Services.Abstract.General;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -26,8 +27,8 @@ namespace CountryDialingCode.API.Controllers
                 throw new ArgumentNullException(nameof(phoneUserService));
         }
 
-        [HttpGet()]
-        public async Task<ActionResult> GetInfoAsync(string phoneNumber)
+        [HttpGet("{phoneNumber}", Name = "GetCallingCountryInfo")]
+        public async Task<ActionResult> GetCallingCountryInfoAsync(string phoneNumber)
         {
 
             if (phoneNumber.Replace(" ", "").Replace("+", "").Trim().Length < 11)
@@ -36,45 +37,53 @@ namespace CountryDialingCode.API.Controllers
             }
 
 
-            string callingCode = GetCallingCodeFromPhoneNumber(phoneNumber);
+            string callingCode = PhoneNumberUtils.GetCallingCodeFromPhoneNumber(phoneNumber);
+
+            if (callingCode.Trim().Length > 4)
+            {
+                return BadRequest(new { Status = 400, Title = "Bad Request", Message = "Calling code should not be more than 4 characters." });
+            }
 
             Country country = await _httpApiConsumer.GetCountryDetailsAsync(callingCode);
-            List<PhoneCallDetails> phoneCalls = new List<PhoneCallDetails>();
 
+            List<PhoneCallDetails> phoneCalls = new List<PhoneCallDetails>();
 
             if (country != null)
             {
                 var userList = _phoneUserService.GetPhoneUsersByLanguage(country.Languages[0].LanguageCode);
 
-                foreach (PhoneUser user in userList)
+                PhoneUser selectedUser = new PhoneUser();
+
+
+                if (userList.Count == 0)
                 {
-                    PhoneCallDetails phoneCallDetails = new PhoneCallDetails();
-
-                    phoneCallDetails.PhoneNumber = phoneNumber;
-                    phoneCallDetails.CallingCode = callingCode;
-                    phoneCallDetails.CountryCode = country.CountryCode;
-                    phoneCallDetails.User = new UserDetails() { Name = user.Name, Languages = user.Languages };
-                    phoneCallDetails.CallingCountry.DefaultLanguage = country.Languages[0].LanguageCode;
-                    phoneCallDetails.CallingCountry.Name = country.Name;
-                    phoneCallDetails.CallingCountry.UserDefaultCountryName = GetCountryNameInUserDefaultLanguage(user.Languages[0], country.Translations) ?? country.Name;
-                    phoneCallDetails.CallingCountry.Region = country.Region;
-                    phoneCallDetails.CallingCountry.FlagUrl = country.FlagUrl;
-
-                    phoneCalls.Add(phoneCallDetails);
+                    selectedUser = _phoneUserService.GetMostLingualPhoneUser();
                 }
+                else
+                {
+                    // Select a user
+                    selectedUser = _phoneUserService.SelectRandomPhoneUser(userList);
+                }
+
+
+                PhoneCallDetails phoneCallDetails = new PhoneCallDetails();
+
+                phoneCallDetails.PhoneNumber = phoneNumber;
+                phoneCallDetails.CallingCode = callingCode;
+                phoneCallDetails.CountryCode = country.CountryCode;
+                phoneCallDetails.User = new UserDetails() { Name = selectedUser.Name, Languages = selectedUser.Languages };
+                phoneCallDetails.CallingCountry.DefaultLanguage = country.Languages[0].LanguageCode;
+                phoneCallDetails.CallingCountry.Name = country.Name;
+                phoneCallDetails.CallingCountry.UserDefaultCountryName = GetCountryNameInUserDefaultLanguage(selectedUser.Languages[0], country.Translations) ?? country.Name;
+                phoneCallDetails.CallingCountry.Region = country.Region;
+                phoneCallDetails.CallingCountry.FlagUrl = country.FlagUrl;
+
+                return Ok(phoneCallDetails);
             }
-
-            return Ok(phoneCalls);
-        }
-
-        private string GetCallingCodeFromPhoneNumber(string phoneNumber)
-        {
-            phoneNumber = phoneNumber.Replace(" ", "");
-
-            phoneNumber = phoneNumber.Replace("+", "");
-
-
-            return phoneNumber.Remove(phoneNumber.Length - 10, 10);
+            else
+            {
+                return NotFound(new { Status = 404, Title = "Not Found", Message = $"Calling code {callingCode} is not valid. Cannot find matching country." });
+            }
 
         }
 
@@ -82,5 +91,6 @@ namespace CountryDialingCode.API.Controllers
         {
             return translations.Where(w => w.Key == userDefaultLanguage).Select(s => s.Value).SingleOrDefault();
         }
+
     }
 }

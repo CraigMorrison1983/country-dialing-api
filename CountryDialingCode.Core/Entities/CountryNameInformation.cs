@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CountryDialingCode.Core.Entities
 {
-    public class CountryName
+    public class CountryNameInformation
     {
         [JsonProperty(PropertyName = "common")]
         public string Common { get; set; }

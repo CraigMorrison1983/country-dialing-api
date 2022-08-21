@@ -10,5 +10,9 @@ namespace CountryDialingCode.Services.Abstract.General
         List<PhoneUser> GetPhoneUsers();
 
         List<PhoneUser> GetPhoneUsersByLanguage(string language);
+
+        PhoneUser GetMostLingualPhoneUser();
+
+        PhoneUser SelectRandomPhoneUser(List<PhoneUser> userList);
     }
 }

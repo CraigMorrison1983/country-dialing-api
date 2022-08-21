@@ -5,8 +5,13 @@ using System.Text;
 
 namespace CountryDialingCode.Core.Entities
 {
-   public class DialingRoute
+    public class DialingRoute
     {
+        public DialingRoute()
+        {
+            Suffixes = new List<string>();
+        }
+
         [JsonProperty(PropertyName = "root")]
         public string Root { get; set; }
 

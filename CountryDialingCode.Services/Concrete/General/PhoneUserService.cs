@@ -36,5 +36,26 @@ namespace CountryDialingCode.Services.Concrete.General
         {
             return _phoneUsers.Where(w => w.Languages.Contains(language)).ToList();
         }
+
+        public PhoneUser GetMostLingualPhoneUser()
+        {
+            return (PhoneUser)_phoneUsers.OrderByDescending(o => o.Languages.Count).Take(1).SingleOrDefault();
+        }
+
+
+        public PhoneUser SelectRandomPhoneUser(List<PhoneUser> userList)
+        {
+            if (userList.Count == 1)
+            {
+                return userList[0];
+            }
+
+            // For the purpose of this implementation we will select a random phone user is there are more than 1 matching the language
+            Random rnd = new Random();
+
+            int x = rnd.Next(0, userList.Count - 1);
+
+            return userList[x];
+        }
     }
 }

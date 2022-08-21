@@ -8,6 +8,12 @@ namespace CountryDialingCode.Core.Entities
 {
     public class Country
     {
+        public Country()
+        {
+            Languages = new List<Language>();
+            Translations = new Dictionary<string, string>();
+        }
+
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 

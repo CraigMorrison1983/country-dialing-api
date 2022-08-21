@@ -23,22 +23,26 @@ namespace CountryDialingCode.Services.Concrete.General
 
         public async Task<Country> GetCountryDetailsAsync(string callingCode)
         {
-            string jsonResult = "";
+            string countryJsonResult = "";
 
             if (callingCode.StartsWith("1"))
             {
                 // Northern American territories. API does not find records if we pass the whole calling code so we just need to pass 1
                 // This returns a list that we then need to handle
-                jsonResult = await _httpApiConsumer.GetAsync(RestCountriesApiConstants.CallingCodeEndPoint, "1");
+                countryJsonResult = await _httpApiConsumer.GetAsync(RestCountriesApiConstants.CallingCodeEndPoint, "1");
             }
-
             else
             {
-                jsonResult = await _httpApiConsumer.GetAsync(RestCountriesApiConstants.CallingCodeEndPoint, callingCode);
-
+                countryJsonResult = await _httpApiConsumer.GetAsync(RestCountriesApiConstants.CallingCodeEndPoint, callingCode);
             }
 
-            var countries = JsonConvert.DeserializeObject<List<Country>>(jsonResult);
+            var countries = JsonConvert.DeserializeObject<List<Country>>(countryJsonResult);
+
+            // No country matched the supplied calling code
+            if (countries == null)
+            {
+                return null;
+            }
 
             var selectedCountry = new Country();
 
@@ -49,10 +53,34 @@ namespace CountryDialingCode.Services.Concrete.General
 
             if (countries.Count > 1)
             {
-                var json2 = await _httpApiConsumer.GetAsync(RestCountriesApiConstants.CountriesListEndPoint, "");
-                var countryList = JsonConvert.DeserializeObject<List<FullCountry>>(json2);
+                // More than 1 country matched the calling code so we need to check the full details that includes suffixes.
+                // Likely to be North America but there are others such as UK
+                var fullCountryListJson = await _httpApiConsumer.GetAsync(RestCountriesApiConstants.CountriesListEndPoint, "");
 
-                var country = countryList.Where(w => callingCode == w.DialingCodes.Suffixes.Where(w1 => w1).S
+                var countryList = JsonConvert.DeserializeObject<List<FullCountry>>(fullCountryListJson);
+                string selectedCountryCode = "";
+
+                if (countryList.Where(w => w.CombinedDialingCodes.Contains(callingCode)).Select(S => S.CountryCode).Any())
+                {
+                    if (countryList.Where(w => w.CombinedDialingCodes.Contains(callingCode)).Select(S => S.CountryCode).Count() > 1)
+                    {
+                        // Still more than 1 country matching.
+                        // Some edge cases like the UK that shares calling code with the surrounding isles. For this we'll select the first one that is "independent"
+                        selectedCountryCode = countryList.Where(w => w.CombinedDialingCodes.Contains(callingCode) && w.IsIndependent == true).Select(S => S.CountryCode).FirstOrDefault();
+                    }
+                    else
+                    {
+                        selectedCountryCode = countryList.Where(w => w.CombinedDialingCodes.Contains(callingCode)).Select(S => S.CountryCode).FirstOrDefault();
+                    }
+                }
+                else
+                {
+                    // No countries matching supplied country code
+                    return null;
+                }
+
+
+                selectedCountry = countries.Where(w => w.CountryCode == selectedCountryCode).SingleOrDefault();
             }
 
             return selectedCountry;
